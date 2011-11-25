@@ -12,27 +12,33 @@ import net.minecraft.client.Minecraft;
 
 public class mod_Timber extends BaseMod
 {
-
-    public String Version()
+	@Override
+    public String getVersion()
     {
-        return "r4 (for b1.8.1)";
+        return "r4 unofficial (for 1.0.0)";
     }
 
     public mod_Timber()
+    {
+    }
+    
+    @Override
+	public void load() 
     {
         Block.blocksList[17] = null;
         Tree = (new BlockTree(17)).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setBlockName("log");
         ModLoader.SetInGameHook(this, true, true);
     }
 
-    public boolean OnTickInGame(Minecraft minecraft)
+    @Override
+	public boolean OnTickInGame(float f, Minecraft minecraft)
     {
         ItemStack itemstack = minecraft.thePlayer.getCurrentEquippedItem();
         if(itemstack != null && (itemstack.getItem() instanceof ItemAxe))
         {
-            float f = itemstack.getStrVsBlock(Block.planks);
+            float g = itemstack.getStrVsBlock(Block.planks);
             BlockTree.setAxe(Boolean.valueOf(true));
-            Tree.setHardness(2.0F / f);
+            Tree.setHardness(2.0F / g);
         } else
         {
             BlockTree.setAxe(Boolean.valueOf(false));

@@ -70,7 +70,7 @@ public class BlockTree extends BlockLog
                     int i2 = world.getBlockMetadata(i + i1, j + k1, k + j1);
                     if(block != null && world.setBlockWithNotify(i + i1, j + k1, k + j1, 0))
                     {
-                        block.dropBlockAsItem(world, i + i1, j + k1, k + j1, i2);
+                        block.dropBlockAsItem(world, i + i1, j + k1, k + j1, i2, 0);
                     }
                 }
 
