@@ -26,9 +26,9 @@ public class mod_Timber extends BaseMod {
       BlockTimberTree.setAxe(Boolean.valueOf(false));
     }
 	
-	try {
-	  Class.forName("mod_PlasticCraft");
-	  if (itemstack != null && itemstack.getItem() instanceof ItemPlasticAxe) {
+    try {
+      Class.forName("ItemPlasticAxe");
+      if (itemstack != null && itemstack.getItem() instanceof ItemPlasticAxe) {
         BlockTimberTree.setAxe(Boolean.valueOf(true));
       } else {
         BlockTimberTree.setAxe(Boolean.valueOf(false));
