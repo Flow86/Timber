@@ -21,14 +21,20 @@ public class mod_Timber extends BaseMod {
     ItemStack itemstack = minecraft.thePlayer.getCurrentEquippedItem();
     
     if (itemstack != null && itemstack.getItem() instanceof ItemAxe) {
-//      float e = itemstack.getStrVsBlock(Block.planks);
       BlockTimberTree.setAxe(Boolean.valueOf(true));
-//      tree.setHardness(2.0F / e);
     } else {
       BlockTimberTree.setAxe(Boolean.valueOf(false));
-//      tree.setHardness(2.0F);
     }
-    
+	
+	try {
+	  Class.forName("mod_PlasticCraft");
+	  if (itemstack != null && itemstack.getItem() instanceof ItemPlasticAxe) {
+        BlockTimberTree.setAxe(Boolean.valueOf(true));
+      } else {
+        BlockTimberTree.setAxe(Boolean.valueOf(false));
+      }
+    } catch (ClassNotFoundException err) {}
+	
     return true;
   }
 }
