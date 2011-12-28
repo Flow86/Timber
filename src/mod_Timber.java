@@ -9,7 +9,7 @@ public class mod_Timber extends BaseMod {
   public String getVersion() { return "1.0.0"; }
   
   @MLProp (name="axeIds", info="List of item ids that are axes.")
-    public String axes = "258, 271, 275, 279, 286, 1052";
+    public static String axes = "258, 271, 275, 279, 286, 1052";
   @MLProp (name="toggleKey", info="Sets the key to hold down to toggle Timber! off. (example, 46 = C)") 
     public static int key = 46;
   
