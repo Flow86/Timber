@@ -12,10 +12,9 @@ public class BlockTimberTree extends BlockLog {
   }
 
   public void onBlockRemoval(World world, int i, int j, int k) { 
-	Minecraft mc = ModLoader.getMinecraftInstance();
-	if (isAxe && !Keyboard.isKeyDown(mod_Timber.key) && !mc.isMultiplayerWorld()) {
+	  Minecraft mc = ModLoader.getMinecraftInstance();
+	  if (isAxe && !Keyboard.isKeyDown(mod_Timber.key) && !mc.isMultiplayerWorld())
       check(world, i, j, k);
-    }
         
     byte byte0 = 4;
     int l = byte0 + 1;
@@ -25,14 +24,12 @@ public class BlockTimberTree extends BlockLog {
           for (int k1 = -byte0; k1 <= byte0; k1++) {
             int l1 = world.getBlockId(i + i1, j + j1, k + k1);
             
-            if (l1 != Block.leaves.blockID) {
+            if (l1 != Block.leaves.blockID)
               continue;
-            }
             
             int i2 = world.getBlockMetadata(i + i1, j + j1, k + k1);
-            if ((i2 & 8) == 0) {
+            if ((i2 & 8) == 0)
               world.setBlockMetadataWithNotify(i + i1, j + j1, k + k1, i2 | 8);
-            }
           }
         }
       }
@@ -52,9 +49,8 @@ public class BlockTimberTree extends BlockLog {
           Block block = Block.blocksList[world.getBlockId(i + i1, j + k1, k + j1)];
           int i2 = world.getBlockMetadata(i + i1, j + k1, k + j1);
             
-          if (block != null && world.setBlockWithNotify(i + i1, j + k1, k + j1, 0)) {
+          if (block != null && world.setBlockWithNotify(i + i1, j + k1, k + j1, 0))
             block.dropBlockAsItem(world, i + i1, j + k1, k + j1, i2, 0);
-          }
         }
       }
     }

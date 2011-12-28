@@ -1,13 +1,17 @@
 package net.minecraft.src;
 
-import org.lwjgl.input.Keyboard;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
 import net.minecraft.client.Minecraft;
 
 public class mod_Timber extends BaseMod {
   public String getVersion() { return "1.0.0"; }
   
-  @MLProp (info="Sets the key to hold down to toggle Timber! off. (example, 46 = C)") 
-    public static int key = Keyboard.KEY_C;
+  @MLProp (name="axeIds", info="List of item ids that are axes.")
+    public String axes = "258, 271, 275, 279, 286, 1052";
+  @MLProp (name="toggleKey", info="Sets the key to hold down to toggle Timber! off. (example, 46 = C)") 
+    public static int key = 46;
   
   static Block tree;
     
@@ -18,23 +22,25 @@ public class mod_Timber extends BaseMod {
   }
     
   public boolean OnTickInGame(float f, Minecraft minecraft) {
-    ItemStack itemstack = minecraft.thePlayer.getCurrentEquippedItem();
-    
-    if (itemstack != null && itemstack.getItem() instanceof ItemAxe) {
+    if (minecraft.thePlayer.getCurrentEquippedItem() != null && canTimber(minecraft))
       BlockTimberTree.setAxe(Boolean.valueOf(true));
-    } else {
+    else
       BlockTimberTree.setAxe(Boolean.valueOf(false));
-    }
-	
-    try {
-      Class.forName("ItemPlasticAxe");
-      if (itemstack != null && itemstack.getItem() instanceof ItemPlasticAxe) {
-        BlockTimberTree.setAxe(Boolean.valueOf(true));
-      } else {
-        BlockTimberTree.setAxe(Boolean.valueOf(false));
-      }
-    } catch (ClassNotFoundException err) {}
 	
     return true;
+  }
+  
+  private boolean canTimber(Minecraft minecraft) {
+  	return isItemAxe(minecraft.thePlayer.getCurrentEquippedItem().itemID, axes);
+  }
+  
+  private boolean isItemAxe(int itemID, String idList) {
+    String[] ids = idList.split(",");
+    for (int i=0; i<ids.length; i++) {
+      int id = Integer.parseInt(ids[i].trim());
+      if (itemID == id) return true;
+    }
+    
+    return false;
   }
 }
