@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import net.minecraft.client.Minecraft;
 
 public class mod_Timber extends BaseMod {
-  public String getVersion() { return "1.0.0"; }
+  public String getVersion() { return "1.1.0"; }
   
   @MLProp (name="axeIds", info="List of item ids that are axes.")
     public static String axes = "258, 271, 275, 279, 286, 1052";
