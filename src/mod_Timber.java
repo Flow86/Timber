@@ -15,7 +15,7 @@ public class mod_Timber extends BaseMod
 	@Override
     public String getVersion()
     {
-        return "r4 unofficial (for 1.0.0)";
+        return "r4 unofficial (for 1.2.3)";
     }
 
     public mod_Timber()
@@ -27,11 +27,11 @@ public class mod_Timber extends BaseMod
     {
         Block.blocksList[17] = null;
         Tree = (new BlockTree(17)).setHardness(2.0F).setStepSound(Block.soundWoodFootstep).setBlockName("log");
-        ModLoader.SetInGameHook(this, true, true);
+        ModLoader.setInGameHook(this, true, true);
     }
 
     @Override
-	public boolean OnTickInGame(float f, Minecraft minecraft)
+	public boolean onTickInGame(float f, Minecraft minecraft)
     {
         ItemStack itemstack = minecraft.thePlayer.getCurrentEquippedItem();
         if(itemstack != null && (itemstack.getItem() instanceof ItemAxe))
