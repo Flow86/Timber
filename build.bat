@@ -5,9 +5,7 @@ set MCPDIR=%GITDIR%\..
 
 CALL :APPLYPATCH
 CALL :COPYCLIENT
-
 CALL :COMPILE
-CALL :COPYTEXTURES
 
 pause
 
@@ -32,14 +30,4 @@ REM ---------------------------------------------------------------------------
 
 :COPYCLIENT
 	xcopy /Y /E %GITDIR%\src\*.java %MCPDIR%\src\minecraft\net\minecraft\src
-GOTO :EOF
-
-REM ---------------------------------------------------------------------------
-
-:COPYSERVER
-GOTO :EOF
-
-REM ---------------------------------------------------------------------------
-
-:COPYTEXTURES
 GOTO :EOF

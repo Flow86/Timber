@@ -15,7 +15,7 @@ public class mod_Timber extends BaseMod
 	@Override
     public String getVersion()
     {
-        return "r4 unofficial (for 1.2.3)";
+        return "r4 unofficial (for 1.2.5)";
     }
 
     public mod_Timber()
