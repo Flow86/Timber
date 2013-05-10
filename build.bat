@@ -1,33 +1,6 @@
 @ECHO OFF
 
-set GITDIR=%~dp0
-set MCPDIR=%GITDIR%\..
+set PATH=F:\apache-ant-1.8.4\bin;D:\apache-ant-1.8.4\bin;C:\Program Files (x86)\Git\bin;%PATH%
 
-CALL :APPLYPATCH
-CALL :COPYCLIENT
-CALL :COMPILE
-
+cmd /c ant %*
 pause
-
-GOTO :EOF
-
-REM ---------------------------------------------------------------------------
-
-:APPLYPATCH
-GOTO :EOF
-
-REM ---------------------------------------------------------------------------
-
-:COMPILE
-	set OLDCD=%CD%
-	cd %MCPDIR%
-	cmd /C recompile.bat
-	cd %OLDCD%
-	set OLDCD=
-GOTO :EOF
-
-REM ---------------------------------------------------------------------------
-
-:COPYCLIENT
-	xcopy /Y /E %GITDIR%\src\*.java %MCPDIR%\src\minecraft\net\minecraft\src
-GOTO :EOF
