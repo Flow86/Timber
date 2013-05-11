@@ -51,12 +51,12 @@ public class Timber {
 
 	@Init
 	public void load(FMLInitializationEvent evt) {
-		Block.blocksList[17] = null;
+		Block.blocksList[Block.wood.blockID] = null;
 
-		blockTree = new BlockTree(17);
+		blockTree = new BlockTree(Block.wood.blockID);
 
-		Item.itemsList[17] = null;
-		Item.itemsList[17] = new ItemMultiTextureTile(-239, blockTree, BlockLog.woodType).setUnlocalizedName("log");
+		Item.itemsList[Block.wood.blockID] = null;
+		Item.itemsList[Block.wood.blockID] = new ItemMultiTextureTile(256-Block.wood.blockID, blockTree, BlockLog.woodType).setUnlocalizedName("log");
 	}
 
 	public static boolean isItemAxe(EntityPlayer thePlayer) {
