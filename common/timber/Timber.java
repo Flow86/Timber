@@ -37,7 +37,7 @@ public class Timber {
 		timberLog.info("Starting Timber #@BUILD_NUMBER@ @TIMBER_VERSION@ (Built for Minecraft @MINECRAFT_VERSION@ with Forge @FORGE_VERSION@");
 		timberLog.info("Copyright (c) Flow86, 2013");
 
-		timberConfiguration = new Configuration(new File(evt.getModConfigurationDirectory(), "timber.conf"));
+		timberConfiguration = new Configuration(new File(evt.getModConfigurationDirectory(), "timber.cfg"));
 		try {
 			timberConfiguration.load();
 
