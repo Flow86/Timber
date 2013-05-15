@@ -1,0 +1,16 @@
+[
+{
+"modid": "mod_Timber",
+"name": "Timber!",
+"description": "Quickly cut down forests in one strike with the Timber! mod. Sneak to temporarily disable the Timber! mod when you want to collect tree blocks individually.",
+"version": "1.5.2r1",
+"credits": "",
+"mcversion": "1.5.2",
+"url": "http://www.minecraftforum.net/topic/119361-/",
+"updateUrl": "",
+"authors": [ "TehKrush" ],
+"parent": "",
+"screenshots": [],
+"dependencies": []
+}
+]

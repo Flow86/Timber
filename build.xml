@@ -1,0 +1,226 @@
+<project name="Timber-Mod" basedir="../" default="main">
+	<property environment="env" />
+
+	<property name="timber.version"            value="1.0.0"/>
+	<property name="timber.dir"                value="Timber-Mod"/>
+	
+	<property name="build.dir" value="build"/>
+	<property name="download.dir" value="download"/>
+	<property name="classes.dir" value="${build.dir}/classes"/>
+	<property name="jar.dir" value="bin"/>
+
+	<property name="forge.dir" value="${build.dir}/forge"/>
+	<property name="mcp.dir" value="${forge.dir}/mcp"/>
+	<property name="mcpsrc.dir" value="${mcp.dir}/src"/>
+
+	<property name="mc.version" value="1.5.2"/>
+	<property name="forge.version" value="7.8.0.684"/>
+
+	<property name="forge.name" value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
+
+	<available property="forge-exists" file="${download.dir}/${forge.name}"/>
+	<available file="${src.dir}/.git" type="dir" property="git.present"/>
+
+	<condition property="out-of-date">
+		<not>
+			<and>
+				<available file="${download.dir}/${forge.name}"/>
+				<available file="${mcpsrc.dir}"/>
+			</and>
+		</not>
+	</condition>
+
+	<mkdir dir="${download.dir}"/>
+
+	<!-- Targets -->
+
+	<!-- Clear build directory -->
+	<target name="clean">
+		<delete file="jenkins.properties" failonerror="false" />
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<!-- Set full version -->
+	<target name="initialize-version" depends="version-provided,version-not-provided,git.revision">
+		<property name="timber.version.full"     value="${timber.version}.${build.number}"/>
+		<echo message="Building ${ant.project.name} ${timber.version.full} with Forge ${forge.version}"/>
+		
+		<delete file="jenkins.properties" failonerror="false" />
+		<propertyfile file="jenkins.properties">
+			<entry key="TIMBER_VERSION_FULL" value="${timber.version.full}" />
+			<entry key="MC_VERSION" value="${mc.version}" />
+			<entry key="MCP_VERSION" value="${mcp.version}" />
+			<entry key="FORGE_VERSION" value="${forge.version}" />
+		</propertyfile>
+	</target>
+
+	<!-- Set unknown build number -->
+	<target name="version-not-provided" unless="env.BUILD_NUMBER">
+		<property name="build.number" value="custom"/>
+	</target>
+
+	<!-- Set build number from environment -->
+	<target name="version-provided" if="env.BUILD_NUMBER">
+		<property name="build.number" value="${env.BUILD_NUMBER}"/>
+	</target>
+	
+	<target name="git.revision" if="git.present">
+		<exec executable="git" dir="${src.dir}" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+			<arg value="describe"/>
+			<arg value="--tags"/>
+			<arg value="--always"/>
+			<arg value="HEAD"/>
+		</exec>
+		<condition property="timber.version" value="${git.revision}" else="0.0.0">
+			<and>
+				<isset property="git.revision"/>
+				<length string="${git.revision}" trim="yes" length="0" when="greater"/>
+			</and>
+		</condition>
+	</target>	
+
+	<!-- Download necessary files -->
+	<target name="download-files" depends="download-forge"/>
+
+	<!-- Download forge (if it doesn't exist) -->
+	<target name="download-forge" unless="forge-exists">
+		<get src="http://files.minecraftforge.net/${forge.name}" dest="${download.dir}" usetimestamp="True"/>
+	</target>
+
+	<!-- Setup mcp and forge -->
+	<target name="setup" depends="initialize-version,download-files"><!-- if="out-of-date"-->
+
+		<delete dir="${forge.dir}" failonerror="false"/>
+
+		<unzip dest="${forge.dir}/.." src="${download.dir}/${forge.name}"/>
+
+		<!-- Fix executable permissions -->
+		<chmod dir="${forge.dir}" perm="ugo+rx" includes="**.sh"/>
+
+		<!-- Install forge -->
+		<exec dir="${forge.dir}" executable="cmd" osfamily="windows">
+			<arg line="/c install.cmd"/>
+		</exec>
+
+		<exec dir="${forge.dir}" executable="sh" osfamily="unix">
+			<arg value="install.sh"/>
+		</exec>
+
+	</target>	
+
+	<!-- Copy source for use in eclipse to debug -->
+	<target name="copy-src-eclipse">
+		<echo message="Installing Timber-Mod source for Eclipse"/>
+
+		<!-- Copy Timber-Mod source -->
+		<copy todir="${mcpsrc.dir}/minecraft">
+			<fileset dir="${timber.dir}/common">
+				<exclude name="**/*.bak"/>
+			</fileset>
+		</copy>
+		
+		<!-- Copy arg resources to debug it -->
+		<copy todir="${mcpsrc.dir}/minecraft">
+			<fileset dir="${timber.dir}/resources">
+				<exclude name="**/*.psd"/>
+				<exclude name="build.xml"/>
+				<exclude name="build.number"/>
+				<exclude name="mcmod.info"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Copy source for packaging -->
+	<target name="copy-src">
+		<echo message="Installing Timber-Mod source"/>
+
+		<!-- Copy Timber-Mod source -->
+		<copy todir="${mcpsrc.dir}/minecraft">
+			<fileset dir="${timber.dir}/common">
+				<exclude name="**/*.bak"/>
+			</fileset>
+			<filterset>
+				<filter token="TIMBER_VERSION" value="${timber.version.full}" />
+				<filter token="BUILD_NUMBER" value="${build.number}" />
+				<filter token="MINECRAFT_VERSION" value="${mc.version}" />
+				<filter token="FORGE_VERSION" value="${forge.version}" />
+			</filterset>
+		</copy>
+	</target>
+	
+	<!-- compile arg -->
+	<target name="compile">
+		<echo message="Compiling Timber-Mod"/>
+
+		<!-- Recompile -->
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows" failonerror="true">
+			<arg line="/c"/>
+			<arg line="recompile.bat"/>
+		</exec>
+
+		<exec dir="${mcp.dir}" executable="sh" osfamily="unix" failonerror="true">
+			<arg value="recompile.sh" />
+		</exec>
+
+		<!-- Check for failure -->
+		<fail message="MCP failed to build">
+			<condition>
+				<resourcecontains resource="${mcp.dir}/logs/client_compile.log" substring="error:"/>
+			</condition>
+		</fail>		
+
+		<!-- Reobf -->
+		<exec dir="${mcp.dir}" executable="cmd" osfamily="windows" failonerror="true">
+			<arg line="/c"/>
+			<arg line="reobfuscate_srg.bat"/>
+		</exec>
+		
+		<!-- remove empty server.md5 or simply every empty file in temp! -->
+		<exec dir="${mcp.dir}" executable="find" osfamily="unix" failonerror="false">
+			<arg value="temp" />
+			<arg value="-empty" />
+			<arg value="-exec" />
+			<arg value="rm" />
+			<arg value="{}" />
+			<arg value=";" />
+		</exec>
+
+		<exec dir="${mcp.dir}" executable="sh" osfamily="unix" failonerror="true">
+			<arg value="reobfuscate_srg.sh" />
+		</exec>
+	</target>
+	
+	<!-- copy build results -->
+	<target name="copy">
+		<echo message="Copying build results"/>
+
+		<!-- Copy Timber-Mod classes -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${mcp.dir}/reobf/minecraft"/>
+		</copy>
+
+		<!-- Copy resources -->
+		<copy todir="${classes.dir}">
+			<fileset dir="${timber.dir}/resources">
+				<exclude name="**/*.psd"/>
+				<exclude name="build.xml"/>
+				<exclude name="build.number"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<!-- create arg package -->
+	<target name="package">
+		<echo message="Creating JAR"/>
+		
+		<jar destfile="${jar.dir}/timber-${timber.version.full}.jar" basedir="${classes.dir}"/>
+
+		<!-- Reset src dir to post-forge-install state -->
+		<delete dir="${mcpsrc.dir}/minecraft/timber"/>
+	</target>
+	
+	<target name="main" depends="clean,setup,copy-src,compile,copy,package">
+		<echo message="Finished building Timber-Mod"/>
+	</target>
+
+</project>
