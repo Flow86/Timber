@@ -12,6 +12,7 @@ public class BlockTree extends BlockLog {
 		setHardness(2.0F);
 		setStepSound(soundWoodFootstep);
 		setUnlocalizedName("log");
+		func_111022_d("log");
 	}
 
 	@Override

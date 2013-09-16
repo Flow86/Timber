@@ -56,7 +56,7 @@ public class Timber {
 		blockTree = new BlockTree(Block.wood.blockID);
 
 		Item.itemsList[Block.wood.blockID] = null;
-		Item.itemsList[Block.wood.blockID] = new ItemMultiTextureTile(256-Block.wood.blockID, blockTree, BlockLog.woodType).setUnlocalizedName("log");
+		Item.itemsList[Block.wood.blockID] = new ItemMultiTextureTile(Block.wood.blockID - 256, blockTree, BlockLog.woodType).setUnlocalizedName("log");
 	}
 
 	public static boolean isItemAxe(EntityPlayer thePlayer) {
